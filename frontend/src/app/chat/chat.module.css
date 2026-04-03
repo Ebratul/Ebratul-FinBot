@@ -1,0 +1,358 @@
+.chatLayout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--bg-primary);
+}
+
+.bodyLayout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: var(--bg-card);
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.sidebarHeader {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sessionList {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 4px;
+}
+
+.sessionItem {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background var(--transition-fast);
+  border: none;
+  text-align: left;
+  background: transparent;
+}
+
+.sessionItem:hover {
+  background: var(--bg-hover);
+}
+
+.sessionItem.active {
+  background: var(--bg-secondary);
+  font-weight: 500;
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+.chatContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.welcome {
+  text-align: center;
+  padding: 60px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  animation: fadeIn 0.6s ease;
+}
+
+.welcomeIcon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.welcome h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.welcome p {
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+.suggestions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.suggestionBtn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.suggestionBtn:hover {
+  border-color: var(--accent-gold);
+  background: var(--bg-hover);
+  color: var(--accent-gold-hover);
+}
+
+.messageList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.messageWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.userWrapper {
+  align-items: flex-end;
+}
+
+.botWrapper {
+  align-items: flex-start;
+}
+
+.message {
+  max-width: 80%;
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  font-size: 15px;
+  line-height: 1.6;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  animation: slideUp 0.3s ease;
+}
+
+.userMessage {
+  background: var(--accent-gold);
+  color: var(--text-on-accent);
+  border-top-right-radius: var(--radius-sm);
+}
+
+.botMessage {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  border-top-left-radius: var(--radius-sm);
+}
+
+.botMeta {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.metaRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.metaLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.citationList {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.citationChip {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.footer {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-light);
+  padding: 24px;
+}
+
+.inputArea {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  gap: 12px;
+  position: relative;
+}
+
+.chatInput {
+  flex: 1;
+  padding: 14px 20px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  font-size: 15px;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.chatInput:focus {
+  border-color: var(--accent-gold);
+}
+
+.sendBtn {
+  padding: 0 24px;
+  border-radius: var(--radius-full);
+}
+
+.warning, .blocked {
+  margin: 0 !important;
+}
+
+.typingDots {
+  display: flex;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.typingDots span {
+  width: 8px;
+  height: 8px;
+  background-color: var(--text-muted);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.typingDots span:nth-child(2) { animation-delay: 0.2s; }
+.typingDots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+/* Markdown Styling */
+.markdownBody {
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.markdownBody table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.markdownBody th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 2px solid #e5e7eb;
+  color: #374151;
+}
+
+.markdownBody td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #4b5563;
+  background-color: #ffffff;
+}
+
+.markdownBody tr:last-child td {
+  border-bottom: none;
+}
+
+.markdownBody tr:hover td {
+  background-color: #f9fafb;
+}
+
+/* Warnings and Blockquotes */
+.markdownBody blockquote {
+  border-left: 4px solid #f59e0b;
+  background-color: #fffbeb;
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 0 8px 8px 0;
+  color: #92400e;
+}
+
+/* Chips and inline code */
+.markdownBody code {
+  background-color: #f3f4f6;
+  color: #ef4444;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+}
+
+.markdownBody pre {
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.markdownBody pre code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.markdownBody p {
+  margin-bottom: 1rem;
+}
+
+.markdownBody ul, .markdownBody ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.markdownBody li {
+  margin-bottom: 0.25rem;
+}

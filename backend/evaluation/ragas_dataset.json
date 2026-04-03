@@ -1,0 +1,182 @@
+[
+    {
+        "question": "When was FinSolve Technologies founded and where is its headquarters?",
+        "ground_truth": "FinSolve Technologies was founded in 2016 and is headquartered in Bangalore, India."
+    },
+    {
+        "question": "How many employees does FinSolve Technologies currently have?",
+        "ground_truth": "The company currently employs approximately 500 people across all departments."
+    },
+    {
+        "question": "What is the mission statement of FinSolve Technologies?",
+        "ground_truth": "FinSolve's mission is to empower financial freedom through secure, scalable, and innovative technology solutions."
+    },
+    {
+        "question": "Which regions does FinSolve Technologies operate in?",
+        "ground_truth": "FinSolve has operations across North America, Europe, and Asia-Pacific."
+    },
+    {
+        "question": "When was the Engineering team established at FinSolve?",
+        "ground_truth": "The Engineering team was established in 2018."
+    },
+    {
+        "question": "What primary financial solutions does FinSolve provide?",
+        "ground_truth": "FinSolve provides digital banking, payment processing, wealth management, and enterprise financial analytics."
+    },
+    {
+        "question": "How many individual users and businesses does FinSolve serve globally?",
+        "ground_truth": "FinSolve serves over 2 million individual users and 10,000+ businesses globally."
+    },
+    {
+        "question": "Which company follows a cost-to-company (CTC) model?",
+        "ground_truth": "FinSolve Technologies (often referred to as AtliqAI in some documents) follows a cost-to-company (CTC) model."
+    },
+    {
+        "question": "Who is the CTO of FinSolve Technologies?",
+        "ground_truth": "The document mentions a Chief Technology Officer (CTO) at the top of the organizational hierarchy."
+    },
+    {
+        "question": "What are the key roles under the VP Infrastructure & DevOps?",
+        "ground_truth": "The VP Infrastructure & DevOps oversees Engineering Managers for Cloud Infrastructure, Database Administration, and Security Engineering."
+    },
+    {
+        "question": "What is the primary architectural pattern used by FinSolve?",
+        "ground_truth": "FinSolve uses a microservices-based, cloud-native system architecture."
+    },
+    {
+        "question": "What database is used for primary transactional data?",
+        "ground_truth": "PostgreSQL is used as the primary relational database for transactional data requiring ACID compliance."
+    },
+    {
+        "question": "What was the target uptime for the Payment Service in 2024?",
+        "ground_truth": "The target uptime for the Payment Service was 99.99%."
+    },
+    {
+        "question": "What was the actual annual uptime achieved by the API Gateway in 2024?",
+        "ground_truth": "The API Gateway achieved an actual annual uptime of 99.991%."
+    },
+    {
+        "question": "Which technology is used for the Web Application frontend?",
+        "ground_truth": "The Web Application is built using React, Redux Toolkit, and Tailwind CSS."
+    },
+    {
+        "question": "What was the engineering team's average velocity in Q4 2024?",
+        "ground_truth": "The average velocity in Q4 2024 was 219 story points per sprint."
+    },
+    {
+        "question": "How many deployments were executed in total during 2024?",
+        "ground_truth": "There were 104 deployments in 2024, averaging 2 per week."
+    },
+    {
+        "question": "What is the target P95 latency for the Auth Service?",
+        "ground_truth": "The target P95 latency for the Auth Service is 100ms."
+    },
+    {
+        "question": "Which tools are used for infrastructure monitoring at FinSolve?",
+        "ground_truth": "FinSolve uses Prometheus, Grafana, and the ELK Stack for monitoring."
+    },
+    {
+        "question": "What is the team's target for test coverage?",
+        "ground_truth": "The team's target test coverage is >= 85%."
+    },
+    {
+        "question": "How many microservices are mentioned in the high-level architecture diagram?",
+        "ground_truth": "The diagram mentions Authentication, Payment Processing, Wealth Management, Analytics, and Notification services (5 microservices)."
+    },
+    {
+        "question": "What recovery time objective (RTO) is defined for disaster recovery?",
+        "ground_truth": "The defined RTO is 4 hours."
+    },
+    {
+        "question": "What was the average overall platform availability in 2024?",
+        "ground_truth": "The overall platform availability was 99.964%."
+    },
+    {
+        "question": "What is the penalty if uptime falls below 99.50%?",
+        "ground_truth": "If uptime is < 99.50%, the SLA credit terms define a 100% monthly fee refund."
+    },
+    {
+        "question": "What was the total amount of SLA credits issued in 2024?",
+        "ground_truth": "Total SLA credits issued in 2024 was 0 as no downtime events exceeded thresholds."
+    },
+    {
+        "question": "What was the average error rate across all services in 2024?",
+        "ground_truth": "The average annual error rate across all services was 0.087%."
+    },
+    {
+        "question": "Which service maintained an error rate of less than 0.01%?",
+        "ground_truth": "The Payment Service maintained an exceptional error rate of < 0.01%."
+    },
+    {
+        "question": "What is the forecasted traffic growth for 2025?",
+        "ground_truth": "FinSolve expects 25-30% year-over-year traffic growth in 2025."
+    },
+    {
+        "question": "What were the total story points delivered in 2024?",
+        "ground_truth": "A total of 4,982 story points were delivered in 2024."
+    },
+    {
+        "question": "By what percentage did the engineering team grow in 2024?",
+        "ground_truth": "The team grew from 57 to 63 engineers, representing an 11% growth."
+    },
+    {
+        "question": "Which compliance framework is followed for payment processing security?",
+        "ground_truth": "FinSolve follows PCI-DSS Level 1 compliance for payment processing."
+    },
+    {
+        "question": "What was the budget allocation percentage for technical debt?",
+        "ground_truth": "Technical debt allocation ranged between 18-22% throughout 2024, with a 20% average target."
+    },
+    {
+        "question": "How many production deployments were performed in 2024?",
+        "ground_truth": "There were 52 production deployments (bi-weekly cadence)."
+    },
+    {
+        "question": "What was the rollback rate for production deployments in 2024?",
+        "ground_truth": "The rollback rate was 1.9%, with only 1 rollback out of 52 deployments."
+    },
+    {
+        "question": "Which new region did FinSolve expand to in Q2 2024?",
+        "ground_truth": "FinSolve expanded to Southeast Asia (Thailand, Vietnam, Indonesia) in Q2 2024."
+    },
+    {
+        "question": "What was the key feature release in Q1 2024?",
+        "ground_truth": "The key release in Q1 2024 was InstantPay, which offers same-day payments."
+    },
+    {
+        "question": "What loyalty program feature was launched in Q3 2024?",
+        "ground_truth": "The Loyalty Platform launch occurred in Q3 2024."
+    },
+    {
+        "question": "What advanced features were introduced for B2B enterprise in Q4 2024?",
+        "ground_truth": "Q4 saw the introduction of B2B bulk payments, spend management, and advanced reporting/tax tools."
+    },
+    {
+        "question": "Which AI-driven feature was launched in Q3 2024?",
+        "ground_truth": "Wealth management AI recommendations were launched in Q3 2024."
+    },
+    {
+        "question": "What cryptocurrency initiative began in Q4 2024?",
+        "ground_truth": "Phase 1 of Cryptocurrency wallet integration began in Q4 2024."
+    },
+    {
+        "question": "How many features were shipped in total during 2024?",
+        "ground_truth": "A total of 156 features were shipped in 2024."
+    },
+    {
+        "question": "What was the average delivery time for a proposed feature to production?",
+        "ground_truth": "The average time to production was 61.6 days."
+    },
+    {
+        "question": "Which feature had the fastest time-to-production in 2024?",
+        "ground_truth": "InstantPay had the fastest time-to-production: 14 days."
+    },
+    {
+        "question": "Which language support was added during the SEA expansion?",
+        "ground_truth": "Thai, Vietnamese, and Indonesian language support was added."
+    },
+    {
+        "question": "What is the target for feature time-to-production in 2025?",
+        "ground_truth": "The goal for 2025 is to reduce average time-to-production to 45 days."
+    }
+]
