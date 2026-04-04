@@ -68,6 +68,10 @@ export default function AdminPage() {
       setRoles(rData);
       setEvaluationDataset(eData);
       setEvaluationResults(resData);
+      // Ensure newRole defaults to first available role
+      if (rData && Object.keys(rData).length > 0) {
+        setNewRole(prev => prev || Object.keys(rData)[0]);
+      }
     } catch (err) {
       setError(err.message || "Failed to fetch admin data.");
     }
@@ -365,7 +369,8 @@ export default function AdminPage() {
                   </div>
                   <div className={styles.formGroup}>
                     <label className="input-label">Departmental Role</label>
-                    <select className="select" value={newRole} onChange={(e) => setNewRole(e.target.value)}>
+                    <select className="select" value={Object.keys(roles).length ? newRole : ""} onChange={(e) => setNewRole(e.target.value)}>
+                      {Object.keys(roles).length === 0 && <option value="">Loading roles...</option>}
                       {Object.keys(roles).map(r => (
                         <option key={r} value={r}>{r.replace('_', ' ').toUpperCase()}</option>
                       ))}
