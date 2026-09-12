@@ -1,4 +1,5 @@
 backend/
+main.py
 .venv/
 qdrant_storage/
 *.sqlite

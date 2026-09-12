@@ -223,6 +223,10 @@ Root Directory: frontend
 Framework Preset: Next.js
 ```
 
+If the Vercel project remains configured with the repository root as its
+directory, the root `vercel.json` and `.vercelignore` explicitly select the
+frontend build and exclude the backend plus the placeholder root `main.py`.
+
 Add the deployed backend URL as an environment variable:
 
 ```env
