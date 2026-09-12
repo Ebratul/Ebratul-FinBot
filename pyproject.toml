@@ -30,3 +30,6 @@ dependencies = [
     "pandas>=2.2.3",
     "langgraph-checkpoint-sqlite>=3.0.3",
 ]
+
+[tool.vercel]
+entrypoint = "backend.main:app"
