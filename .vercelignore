@@ -1,0 +1,10 @@
+backend/
+.venv/
+qdrant_storage/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+pyproject.toml
+uv.lock
+.python-version
+evals_with_ragas.ipynb

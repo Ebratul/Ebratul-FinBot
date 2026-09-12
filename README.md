@@ -209,6 +209,32 @@ The API root returns service information. For interactive API documentation, ope
 http://localhost:8000/docs
 ```
 
+## Vercel deployment
+
+Deploy the Next.js frontend to Vercel separately from the FastAPI backend. The
+root `vercel.json` and `.vercelignore` exclude the backend's heavyweight
+machine-learning dependencies from the frontend bundle, avoiding Vercel's
+500 MB serverless function limit.
+
+In the Vercel project settings, set:
+
+```text
+Root Directory: ./
+Framework Preset: Next.js
+```
+
+Add the deployed backend URL as an environment variable:
+
+```env
+NEXT_PUBLIC_API_URL=https://your-backend-domain.example.com
+```
+
+Deploy the FastAPI service on a Python-friendly host (for example, Railway,
+Render, or Fly.io) and configure its CORS origins for the Vercel frontend
+domain. Do not deploy the full RAG backend as a Vercel Python function because
+embedding, document-processing, and vector-search dependencies exceed the
+serverless bundle limit.
+
 ## Health check
 
 ```bash
