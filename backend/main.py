@@ -98,6 +98,17 @@ class DocumentInfo(BaseModel):
 #  AUTH ENDPOINTS
 # ══════════════════════════════════════════════════════════════════════════════
 
+@app.get("/")
+async def api_root():
+    """Return a small service description for the API base URL."""
+    return {
+        "service": "Ebratul FinBot API",
+        "status": "running",
+        "health": "/health",
+        "docs": "/docs",
+    }
+
+
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}

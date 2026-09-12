@@ -203,6 +203,12 @@ The backend API is available at:
 http://localhost:8000
 ```
 
+The API root returns service information. For interactive API documentation, open:
+
+```text
+http://localhost:8000/docs
+```
+
 ## Health check
 
 ```bash
