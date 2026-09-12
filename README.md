@@ -212,14 +212,14 @@ http://localhost:8000/docs
 ## Vercel deployment
 
 Deploy the Next.js frontend to Vercel separately from the FastAPI backend. The
-root `vercel.json` and `.vercelignore` exclude the backend's heavyweight
-machine-learning dependencies from the frontend bundle, avoiding Vercel's
+frontend's `vercel.json` keeps Vercel focused on the Next.js application,
+avoiding the backend's heavyweight machine-learning dependencies and Vercel's
 500 MB serverless function limit.
 
 In the Vercel project settings, set:
 
 ```text
-Root Directory: ./
+Root Directory: frontend
 Framework Preset: Next.js
 ```
 
