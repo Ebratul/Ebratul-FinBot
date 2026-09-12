@@ -32,12 +32,19 @@ export default function Navbar() {
     router.push("/");
   };
 
+  const handleCollectionClick = (collection) => {
+    window.dispatchEvent(new CustomEvent("finbot:collection-select", {
+      detail: collection,
+    }));
+    router.push(`/chat?collection=${encodeURIComponent(collection)}`);
+  };
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.left}>
         <div className={styles.logo} onClick={() => router.push("/chat")}>
           <span className={styles.logoIcon}>🤖</span>
-          <span className={styles.logoText}>FinBot</span>
+          <span className={styles.logoText}>Ebratul FinBot</span>
         </div>
         <div className={styles.navLinks}>
           <button
@@ -67,7 +74,15 @@ export default function Navbar() {
         </div>
         <div className={styles.collections}>
           {user.accessible_collections?.map((c) => (
-            <span key={c} className="badge badge-gold">{c}</span>
+            <button
+              key={c}
+              type="button"
+              className={`${styles.collectionButton} badge badge-gold`}
+              onClick={() => handleCollectionClick(c)}
+              aria-label={`Ask about ${c} documents`}
+            >
+              {c}
+            </button>
           ))}
         </div>
         <button className={`btn btn-secondary btn-sm ${styles.logoutBtn}`} onClick={handleLogout}>

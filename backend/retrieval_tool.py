@@ -30,14 +30,24 @@ class RetrievalTool:
 
     def get_qdrant_client(self) -> QdrantClient:
         if self.qdrant_client is None:
-            if settings.qdrant_url:
-                kwargs = {"url": settings.qdrant_url}
-                if settings.qdrant_api_key:
-                    kwargs["api_key"] = settings.qdrant_api_key.get_secret_value()
-            else:
-                kwargs = {"path": settings.qdrant_path}
-            
-            self.qdrant_client = QdrantClient(**kwargs)
+            candidate_kwargs = {"path": settings.qdrant_path}
+
+            qdrant_url = (settings.qdrant_url or "").strip()
+            qdrant_api_key = (settings.qdrant_api_key.get_secret_value() if settings.qdrant_api_key else "").strip()
+
+            if qdrant_url:
+                remote_kwargs = {"url": qdrant_url}
+                if qdrant_api_key:
+                    remote_kwargs["api_key"] = qdrant_api_key
+                try:
+                    remote_client = QdrantClient(**remote_kwargs)
+                    remote_client.get_collections()
+                    self.qdrant_client = remote_client
+                    return self.qdrant_client
+                except Exception as exc:
+                    logger.warning("[Retrieval] Remote Qdrant at '%s' is unavailable; falling back to local path '%s': %s", qdrant_url, settings.qdrant_path, exc)
+
+            self.qdrant_client = QdrantClient(**candidate_kwargs)
         return self.qdrant_client
 
     def get_vectorstore(self, collection_name: str) -> QdrantVectorStore:

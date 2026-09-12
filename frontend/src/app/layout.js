@@ -2,9 +2,9 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata = {
-  title: "FinBot — FinSolve Technologies AI Assistant",
+  title: "Ebratul FinBot — Ebratul Technologies AI Assistant",
   description:
-    "Internal AI-powered Q&A assistant with role-based access control for FinSolve Technologies employees.",
+    "Internal AI-powered Q&A assistant with role-based access control for Ebratul Technologies employees.",
 };
 
 export default function RootLayout({ children }) {

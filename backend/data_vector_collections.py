@@ -4,7 +4,7 @@ from docling_core.transforms.chunker import HierarchicalChunker
 from langchain_qdrant import QdrantVectorStore
 from langchain_core.documents import Document
 from langchain_huggingface import HuggingFaceEmbeddings
-from qdrant_client.http.models import Filter, FieldCondition, MatchValue
+from qdrant_client.http.models import Filter, FieldCondition, MatchAny
 from backend.config import settings
 from langchain_docling import DoclingLoader
 from langchain_docling.loader import ExportType
@@ -32,8 +32,8 @@ def get_role_filter(user_role: str):
         return Filter(
             must=[
                 FieldCondition(
-                    key="metadata.access_roles", 
-                    match=MatchValue(value=user_role)
+                    key="metadata.access_roles",
+                    match=MatchAny(any=[user_role])
                 )
             ]
         )

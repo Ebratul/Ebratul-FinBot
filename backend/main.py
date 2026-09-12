@@ -18,7 +18,7 @@ from backend.evaluator_service import get_evaluator
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="FinBot API", description="Internal AI assistant for FinSolve Technologies")
+app = FastAPI(title="Ebratul FinBot API", description="Internal AI assistant for Ebratul Technologies")
 
 # ── CORS for NextJS frontend ─────────────────────────────────────────────────
 app.add_middleware(

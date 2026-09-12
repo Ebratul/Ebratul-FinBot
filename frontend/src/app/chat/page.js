@@ -30,13 +30,34 @@ export default function ChatPage() {
   };
 
   useEffect(() => {
-    if (!sessionId) setSessionId(crypto.randomUUID());
-  }, []);
+    if (!sessionId) {
+      setSessionId(crypto.randomUUID());
+    }
+  }, [sessionId]);
 
   useEffect(() => {
     if (user) {
       fetchSessions();
     }
+  }, [user]);
+
+  useEffect(() => {
+    const selectCollection = (collection) => {
+      if (user?.accessible_collections?.includes(collection)) {
+        setInput(`What information is available in the ${collection} documents?`);
+      }
+    };
+    const collectionFromUrl = new URLSearchParams(window.location.search).get("collection");
+    if (collectionFromUrl) {
+      selectCollection(collectionFromUrl);
+    }
+    const handleCollectionEvent = (event) => {
+      selectCollection(event.detail);
+    };
+    window.addEventListener("finbot:collection-select", handleCollectionEvent);
+    return () => {
+      window.removeEventListener("finbot:collection-select", handleCollectionEvent);
+    };
   }, [user]);
 
   const handleNewChat = () => {
@@ -143,7 +164,7 @@ export default function ChatPage() {
             <div className={styles.welcome}>
               <div className={styles.welcomeIcon}>👋</div>
               <h1>Hello, {user.display_name}</h1>
-              <p>How can I help you today? I have access to your department's documents.</p>
+              <p>How can I help you today? I have access to your department&apos;s documents.</p>
               <div className={styles.suggestions}>
                 <button onClick={() => setInput("What is the company leave policy?")} className={styles.suggestionBtn}>
                   Leave Policy
@@ -225,7 +246,7 @@ export default function ChatPage() {
           <input
             type="text"
             className={styles.chatInput}
-            placeholder="Ask a question about FinSolve docs..."
+            placeholder="Ask a question about Ebratul Technologies docs..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={isTyping}

@@ -1,4 +1,5 @@
 import logging
+import re
 import sqlite3
 
 from langchain_core.messages import HumanMessage, ToolMessage, AIMessage
@@ -76,7 +77,7 @@ class FinBotAgent:
         
         self.tools = [self.retrieval_tool_instance.get_as_tool()]
         
-        self.system_message = """You are FinBot, an internal AI assistant for FinSolve Technologies.
+        self.system_message = """You are Ebratul FinBot, an internal AI assistant for Ebratul Technologies.
 You answer employee questions accurately using ONLY information from the company's internal documents.
 
 Rules:
@@ -86,6 +87,35 @@ Rules:
 - If the tool returns an access denied message, politely inform the user they don't have access.
 - If no relevant information is found, say so clearly.
 - You must exactly pass the provided user_role and computed_route values into the retrieval tool."""
+
+    def _build_fallback_answer(self, query: str, user_role: str, route: str) -> tuple[str, list, list, str]:
+        """Fallback response used when the configured LLM provider is unavailable."""
+        retrieved_text = self.retrieval_tool_instance.retrieve(query, user_role, force_route=route)
+        if "No relevant documents found." in retrieved_text or "Access denied" in retrieved_text:
+            answer = "I couldn’t find relevant internal documentation for that question, or your role does not have access to the requested information."
+            return answer, [], [], retrieved_text
+
+        blocks = [part.strip() for part in retrieved_text.split("\n\n---\n\n") if part.strip()]
+        summary_parts = []
+        citations = []
+        for block in blocks[:2]:
+            header, _, body = block.partition("\n")
+            summary_parts.append(body.strip())
+            match = re.search(r"Source:\s*(.+?),\s*Page\s*(.+?)(?:\s*\|\s*Section:\s*(.+?))?(?:\s*\|\s*Collection:\s*(.+?))?$", header)
+            if match:
+                citations.append({
+                    "source": match.group(1).strip(),
+                    "page": match.group(2).strip(),
+                    "section": (match.group(3) or "").strip(),
+                    "collection": (match.group(4) or "").strip(),
+                })
+
+        if summary_parts:
+            answer = "I couldn’t reach the live Groq model, but the available internal documents suggest the following:\n\n" + "\n\n".join(summary_parts[:2])
+        else:
+            answer = "I couldn’t reach the live Groq model, but the retrieval layer did return relevant internal documents for this request."
+
+        return answer, citations, summary_parts, retrieved_text
 
     def ask_finbot(self, query: str, user_role: str, session_id: str, bypass_guardrails: bool = False, user_id: str = None) -> dict:
         """
@@ -199,15 +229,25 @@ Rules:
             }
 
         except Exception as e:
-            logger.error(f"[Agent] Agent execution failed: {e}")
+            logger.warning(f"[Agent] LLM execution failed for session '{session_id}', using retrieval fallback: {e}")
+            fallback_answer, fallback_citations, _, _ = self._build_fallback_answer(query, user_role, route)
+            if user_id:
+                title = query[:30] + '...' if len(query) > 30 else query
+                self.db_conn.execute(
+                    "INSERT OR IGNORE INTO user_sessions (session_id, user_id, title) VALUES (?, ?, ?)",
+                    (session_id, user_id, title)
+                )
+                self.db_conn.commit()
             return {
-                "answer": "An error occurred while processing your request. Please try again.",
+                "answer": fallback_answer,
+                "citations": fallback_citations,
+                "retrieved_chunks": [],
                 "route": route,
                 "guardrail_warning": None,
                 "blocked": False,
                 "user_role": user_role,
                 "accessible_collections": self.retrieval_tool_instance.role_collections.get(user_role, ["general"]),
-                "message": f"Error: {str(e)}"
+                "message": "Success (LLM unavailable; retrieval fallback used)."
             }
 
     def get_user_sessions(self, user_id: str) -> list:

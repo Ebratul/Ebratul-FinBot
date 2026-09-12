@@ -1,245 +1,337 @@
-# 🤖 FinBot — Enterprise RAG with RBAC
+# Ebratul FinBot
 
-> An internal AI assistant for **FinSolve Technologies** (fictional fintech company) that answers employee questions **strictly from internal documents**, with role-based access control enforced at the vector retrieval layer.
+> A secure internal AI assistant for Ebratul Technologies that answers questions from authorized company documents.
 
-**🎥 Demo (RBAC refusal + guardrail trigger):** [LinkedIn Post](https://www.linkedin.com/posts/sunil-c-s-3734a8138_just-finished-building-finbot-an-internal-activity-7446081289453056000-sGAb?utm_source=share&utm_medium=member_desktop&rcm=ACoAACGIUgcBAkgYUQCgRBVAIj4ELdCr5N3UDxA)
+Ebratul FinBot is a role-aware Retrieval-Augmented Generation (RAG) application. It combines FastAPI, Next.js, Groq, Hugging Face embeddings, and Qdrant to provide grounded answers while enforcing access control during document retrieval.
 
----
+## What it does
 
-## 🏗️ Architecture
+- Answers questions about internal company documents
+- Supports general, finance, engineering, and marketing knowledge
+- Uses role-based access control (RBAC) at the vector retrieval layer
+- Returns source document and page citations
+- Blocks off-topic, harmful, and unauthorized requests
+- Maintains chat sessions and history
+- Provides an admin panel for users, documents, and evaluations
+- Uses a retrieval fallback when the live Groq model is unavailable
 
-```
-User Query
-    │
-    ▼
-┌─────────────────────────────────┐
-│         INPUT GUARDRAILS        │
-│  • Rate Limiter (20 q/session)  │
-│  • Semantic Router (off-topic / │
-│    harmful query detection)     │
-│  • PII Middleware (email, CC,   │
-│    Aadhaar, bank account redact)│
-└──────────────┬──────────────────┘
-               │ (passes)
-               ▼
-┌─────────────────────────────────┐
-│        SEMANTIC ROUTER          │
-│  Classifies query into route:   │
-│  finance / engineering /        │
-│  marketing / general /          │
-│  cross_department               │
-└──────────────┬──────────────────┘
-               │
-               ▼
-┌─────────────────────────────────┐
-│      RBAC ENFORCEMENT           │◄─── JWT Token (role claim)
-│  route_name vs user_role check  │
-│  • employee   → general only    │
-│  • finance    → general+finance │
-│  • engineering→ general+eng     │
-│  • marketing  → general+mkt     │
-│  • c_level    → ALL collections │
-└──────────────┬──────────────────┘
-               │ (access granted)
-               ▼
-┌─────────────────────────────────┐
-│       QDRANT VECTOR STORE       │
-│  Filter: collection metadata    │
-│  matches user's allowed roles   │
-│  Hierarchical chunking (Docling)│
-└──────────────┬──────────────────┘
-               │ top-k chunks
-               ▼
-┌─────────────────────────────────┐
-│    LLM (Groq / LLaMA 3.1)      │
-│  Answers from retrieved context │
-│  only — no hallucination        │
-│  Cites source + page number     │
-└──────────────┬──────────────────┘
-               │
-               ▼
-┌─────────────────────────────────┐
-│        OUTPUT GUARDRAILS        │
-│  • Source Citation Validator    │
-│  • Grounding Check (figures)    │
-│  • Cross-Role Leakage Detector  │
-└──────────────┬──────────────────┘
-               │
-               ▼
-           Response
+## Architecture
+
+```text
+User
+  |
+  v
+Next.js Frontend
+  |
+  | JWT Authorization
+  v
+FastAPI Backend
+  |
+  +--> Authentication
+  +--> Input Guardrails
+  +--> Semantic Query Routing
+  +--> RBAC Permission Check
+  +--> Qdrant Vector Retrieval
+  +--> Groq LLM Generation
+  +--> Output Guardrails
+  |
+  v
+Grounded Answer + Citations
 ```
 
-### RBAC Enforcement Flow
+## End-to-end query flow
 
+1. The user signs in through the Next.js frontend.
+2. The FastAPI backend verifies the credentials and returns a JWT.
+3. The frontend stores the token and sends it with authenticated requests.
+4. The user submits a question to `POST /api/agent`.
+5. Input guardrails check rate limits, off-topic requests, harmful requests, and sensitive data.
+6. The semantic router classifies the question as `general`, `finance`, `engineering`, `marketing`, or `cross_department`.
+7. The backend derives the user role from the JWT, not from the request body.
+8. Qdrant searches only the collections allowed for that role.
+9. Retrieved document chunks are sent to the Groq model with grounding and citation instructions.
+10. Output guardrails check grounding, citations, and cross-role leakage.
+11. The frontend renders the answer, route, warnings, citations, and session updates.
+
+## Role access
+
+| Role | Accessible collections |
+|---|---|
+| Employee | `general` |
+| Finance | `general`, `finance` |
+| Engineering | `general`, `engineering` |
+| Marketing | `general`, `marketing` |
+| C-Level | `general`, `finance`, `engineering`, `marketing` |
+
+The access rule is enforced in Qdrant metadata filters. Hiding a button in the frontend is not the security boundary.
+
+## Demo accounts
+
+| Username | Password | Role |
+|---|---|---|
+| `admin` | `admin123` | C-Level Admin |
+| `alice` | `demo123` | Employee |
+| `bob` | `demo123` | Finance |
+| `carol` | `demo123` | Engineering |
+| `dave` | `demo123` | Marketing |
+| `eve` | `demo123` | C-Level |
+
+These accounts are seeded in the current demo user store. User data is in memory, so production deployments should replace it with a persistent database.
+
+## Technology stack
+
+### Backend
+
+- Python
+- FastAPI
+- LangChain and LangGraph
+- Groq LLM
+- Hugging Face sentence-transformer embeddings
+- Qdrant vector store
+- SQLite checkpoint storage
+- JWT authentication
+
+### Frontend
+
+- Next.js
+- React
+- React Markdown
+- CSS Modules
+
+## Project structure
+
+```text
+.
+├── backend/
+│   ├── main.py                    # FastAPI routes
+│   ├── agent.py                   # RAG and LLM orchestration
+│   ├── config.py                  # Environment configuration
+│   ├── user_store.py              # Demo authentication and roles
+│   ├── query_router.py            # Semantic routing
+│   ├── input_guardrails.py        # Input validation and blocking
+│   ├── output_guardrails.py       # Grounding and leakage checks
+│   ├── retrieval_tool.py          # RBAC-filtered Qdrant search
+│   └── data_vector_collections.py # Document ingestion and metadata
+├── frontend/
+│   └── src/
+│       ├── app/                   # Login, chat, and admin pages
+│       ├── components/            # Navbar and shared UI
+│       ├── context/               # Authentication context
+│       └── lib/api.js             # Backend API client
+├── qdrant_storage/                # Local vector data
+├── checkpoints.sqlite             # Local chat/checkpoint data
+├── FINBOT_END_TO_END.md           # Detailed workflow documentation
+└── pyproject.toml
 ```
-JWT Login → role extracted from token
-    │
-    ├── Query classified → route (e.g. "finance")
-    │
-    ├── RBAC check: does user_role allow route?
-    │       YES → retrieve from allowed Qdrant collections
-    │       NO  → "You don't have access to finance documents."
-    │
-    └── Output guard: cross-role leakage scan on LLM response
-            LEAK DETECTED → response blocked (🔒)
-            CLEAN         → response returned with citations
-```
 
----
+## Requirements
 
-## ⚙️ Setup
+- Python 3.10+
+- Node.js and npm
+- A valid Groq API key
+- Hugging Face access for embedding model downloads
+- Local disk space for Qdrant data and embedding models
 
-### 1. Clone & create virtual environment
+## Environment configuration
 
-```bash
-git clone https://github.com/YOUR_USERNAME/finbot.git
-cd finbot
-```
-
-### 2. Install dependencies (using `uv`)
-
-```bash
-pip install uv
-uv sync
-```
-
-### 3. Configure API keys
-
-Copy `.env.example` to `.env` and fill in:
+Create a `.env` file from `.env.example`:
 
 ```bash
 cp .env.example .env
 ```
 
-| Variable | Required | Description |
-|---|---|---|
-| `GROQ_API_KEY` | ✅ | Get free key at [console.groq.com](https://console.groq.com) |
-| `GROQ_MODEL_NAME` | ✅ | e.g. `llama-3.1-8b-instant` or `llama-3.3-70b-versatile` |
-| `HF_TOKEN` | Optional | HuggingFace token (for gated models) |
-| `EMBED_MODEL_ID` | ✅ | `sentence-transformers/all-MiniLM-L6-v2` |
-| `QDRANT_PATH` | ✅ | Local path e.g. `/tmp/my_lang_vs` |
-| `SEMANTIC_ROUTER_ENCODER` | ✅ | `Qwen/Qwen3-Embedding-0.6B` |
-| `SESSION_MAX_QUERIES` | ✅ | Max queries per session (default: 20) |
-| `EVAL_LLM_MODEL` | Optional | e.g. `llama-3.1-8b-instant` for RAGAs critic |
-| `EVAL_EMBED_MODEL` | Optional | e.g. `BAAI/bge-small-en-v1.5` |
+Important settings:
 
-### 4. Start the backend
-
-```bash
-# Terminal 1
-PYTHONPATH=. uv run uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+```env
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL_NAME=openai/gpt-oss-20b
+EMBED_MODEL_ID=sentence-transformers/all-MiniLM-L6-v2
+QDRANT_PATH=/tmp/my_lang_vs
+SESSION_MAX_QUERIES=20
 ```
 
-> ⚠️ First startup takes ~60 seconds — embedding models are loaded into memory.
+Never commit real API keys or tokens to source control.
 
-### 5. Start the frontend
+## Installation
+
+### Backend
 
 ```bash
-# Terminal 2
-cd frontend
+cd /data/project
+pip install uv
+uv sync
+```
+
+### Frontend
+
+```bash
+cd /data/project/frontend
 npm install
+```
+
+## Run locally
+
+Start the backend:
+
+```bash
+cd /data/project
+.venv/bin/uvicorn backend.main:app --host 0.0.0.0 --port 8000
+```
+
+For development reload:
+
+```bash
+.venv/bin/uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Start the frontend in another terminal:
+
+```bash
+cd /data/project/frontend
 npm run dev
 ```
 
-Open **http://localhost:3000**
+Open the application:
 
----
-
-## 👥 Demo Credentials
-
-| Name | Username | Password | Role | Collections |
-|---|---|---|---|---|
-| System Admin | `admin` | `admin123` | C-Level (Admin) | ALL |
-| Alice Johnson | `alice` | `demo123` | Employee | general |
-| Bob Williams | `bob` | `demo123` | Finance | general, finance |
-| Carol Martinez | `carol` | `demo123` | Engineering | general, engineering |
-| Dave Thompson | `dave` | `demo123` | Marketing | general, marketing |
-| Eve Chen (CEO) | `eve` | `demo123` | C-Level | ALL |
-
----
-
-## 🔐 RBAC Test Queries
-
-### Alice (Employee) — `general` only
-- ✅ `What is the company leave policy?`
-- ❌ `What are the Q4 financial results?` → **Access Denied**
-
-### Bob (Finance) — `general + finance`
-- ✅ `What is the company's revenue and net profit?`
-- ❌ `What are the engineering team's technical specifications?` → **Access Denied**
-
-### Carol (Engineering) — `general + engineering`
-- ✅ `What is the system architecture?`
-- ❌ `What is the marketing campaign strategy?` → **Access Denied**
-
-### Dave (Marketing) — `general + marketing`
-- ✅ `What are the latest marketing campaigns?`
-- ❌ `What is the company's financial budget?` → **Access Denied**
-
-### Eve (C-Level) — All collections
-- ✅ `Give me a summary of finance and engineering performance`
-- ✅ `What is the marketing strategy and revenue alignment?`
-
----
-
-## 🛡️ Guardrail Test Queries
-
-| Type | Query | Expected |
-|---|---|---|
-| Off-topic | `What is the capital of France?` | ❌ Blocked |
-| Harmful | `How can I commit financial fraud?` | ❌ Blocked |
-
----
-
-## 📊 RAGAs Ablation Study Results
-
-Evaluation compares two pipeline passes on 45 ground-truth QA pairs:
-- **Baseline** — guardrails bypassed (raw RAG)
-- **Final (Secure)** — full pipeline with input + output guardrails
-
-| Metric | Baseline (Guardrails OFF) | Final (Guardrails ON) | Δ Improvement |
-|---|---|---|---|
-| **Faithfulness** | 0.61 | 0.79 | +18% |
-| **Answer Correctness** | 0.54 | 0.68 | +14% |
-| **Answer Relevancy** | 0.72 | 0.83 | +11% |
-| **Context Precision** | 0.58 | 0.74 | +16% |
-| **Context Recall** | 0.65 | 0.77 | +12% |
-
-> 📝 These are representative results. Run the live evaluation from the Admin Panel → Evaluation tab to generate your own numbers using Groq + RAGAs.
-
----
-
-## 🗂️ Project Structure
-
-```
-finbot/
-├── backend/
-│   ├── main.py                  # FastAPI app + all API routes
-│   ├── agent.py                 # FinBotAgent — full pipeline orchestration
-│   ├── query_router.py          # Semantic routing (5 department routes)
-│   ├── input_guardrails.py      # Off-topic/harmful detection + PII middleware
-│   ├── output_guardrails.py     # Citation, grounding, cross-role leak checks
-│   ├── retrieval_tool.py        # Qdrant RBAC-filtered retrieval
-│   ├── data_vector_collections.py # Doc loading, chunking (Docling), indexing
-│   ├── user_store.py            # In-memory user store + JWT auth
-│   ├── evaluator_service.py     # RAGAs ablation study service
-│   ├── config.py                # Pydantic settings from .env
-│   └── data/                   # Indexed documents (per collection folder)
-│       ├── general/
-│       ├── finance/
-│       ├── engineering/
-│       └── marketing/
-├── frontend/                    # Next.js 16 app
-│   └── src/
-│       ├── app/
-│       │   ├── page.js          # Login page
-│       │   ├── chat/page.js     # Chat interface
-│       │   └── admin/page.js    # Admin panel
-│       ├── components/Navbar.js
-│       ├── context/AuthContext.js
-│       └── lib/api.js           # API client
-├── .env.example
-└── pyproject.toml
+```text
+http://localhost:3000
 ```
 
----
+The backend API is available at:
+
+```text
+http://localhost:8000
+```
+
+## Health check
+
+```bash
+curl http://localhost:8000/health
+```
+
+Expected response:
+
+```json
+{"status":"healthy"}
+```
+
+## Document ingestion
+
+Documents are organized by collection:
+
+```text
+backend/data/
+├── general/
+├── finance/
+├── engineering/
+└── marketing/
+```
+
+The ingestion pipeline:
+
+1. Loads PDF, DOCX, DOC, Markdown, and TXT files.
+2. Parses documents with Docling.
+3. Creates hierarchical chunks.
+4. Adds source, page, section, collection, and access-role metadata.
+5. Generates embeddings.
+6. Stores chunks in the appropriate Qdrant collection.
+
+Run ingestion with:
+
+```bash
+cd /data/project
+.venv/bin/python -m backend.data_vector_collections
+```
+
+## Main API endpoints
+
+### Authentication
+
+```http
+GET  /health
+POST /api/auth/login
+GET  /api/auth/me
+```
+
+### Chat
+
+```http
+POST /api/agent
+GET  /api/chat/sessions
+GET  /api/chat/sessions/{session_id}
+```
+
+### Admin
+
+```http
+GET    /api/admin/users
+POST   /api/admin/users
+DELETE /api/admin/users/{user_id}
+PUT    /api/admin/users/{user_id}/role
+GET    /api/admin/roles
+GET    /api/admin/documents
+POST   /api/admin/documents/upload
+DELETE /api/admin/documents/{collection}/{filename}
+```
+
+### Evaluation
+
+```http
+GET  /api/evaluation/dataset
+POST /api/evaluation/run
+GET  /api/evaluation/results
+```
+
+## Frontend features
+
+- Login and logout
+- Role-aware navigation
+- Interactive collection buttons
+- New chat creation
+- Previous session selection
+- Markdown and table rendering
+- Typing indicator
+- Citations and guardrail warnings
+- Admin user management
+- Admin document management
+- RAG evaluation controls
+
+## Groq fallback behavior
+
+If the Groq API request fails because of an invalid key, unavailable model, timeout, or network issue, the backend returns a retrieval-based fallback answer instead of crashing:
+
+```text
+I couldn’t reach the live Groq model, but the available internal documents suggest the following:
+```
+
+After changing `.env`, restart the backend so the new configuration is loaded.
+
+## Validation commands
+
+```bash
+cd /data/project/frontend
+npm run lint
+npm run build
+```
+
+## Production recommendations
+
+The current project is suitable for a local demo and assignment environment. Before production:
+
+1. Replace the in-memory user store with PostgreSQL.
+2. Use Argon2 or bcrypt instead of plain SHA-256 password hashing.
+3. Move the JWT secret into an environment variable.
+4. Consider secure httpOnly cookies for authentication.
+5. Persist users, chat sessions, and messages in a database.
+6. Add strict upload size, file type, and filename validation.
+7. Avoid returning internal exception details in API responses.
+8. Use an authenticated remote Qdrant deployment.
+9. Configure HTTPS and restricted CORS origins.
+10. Add structured logging, monitoring, retries, and timeouts.
+
+## Detailed documentation
+
+For the complete Bengali/English end-to-end explanation, see:
+
+[FINBOT_END_TO_END.md](./FINBOT_END_TO_END.md)
+# Ebratul-FinBot

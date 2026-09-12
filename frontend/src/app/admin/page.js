@@ -192,7 +192,7 @@ export default function AdminPage() {
           <div className={styles.formGroup}>
             <label className="input-label">Sample Size (Limit for Speed)</label>
             <p className={styles.userSubtitle}>Running full 45-pair evaluation takes ~5 minutes. Start with 5-10 for testing.</p>
-            <select className="select" value={evalSampleSize} onChange={(e) => setEvalSampleSize(Number(e.target.value))}>
+            <select className="select" value={evalSampleSize ?? 10} onChange={(e) => setEvalSampleSize(Number(e.target.value))}>
               <option value={5}>5 Questions</option>
               <option value={10}>10 Questions</option>
               <option value={20}>20 Questions</option>
@@ -356,20 +356,20 @@ export default function AdminPage() {
                 <h2 className={styles.sectionTitle}>Add New User</h2>
                 <form className={styles.form} onSubmit={handleCreateUser}>
                   <div className={styles.formGroup}>
-                    <label className="input-label">User's Full Name</label>
-                    <input className="input" value={newDisplayName} onChange={(e) => setNewDisplayName(e.target.value)} required placeholder="e.g. John Doe" />
+                    <label className="input-label">User&apos;s Full Name</label>
+                    <input className="input" value={newDisplayName ?? ""} onChange={(e) => setNewDisplayName(e.target.value)} required placeholder="e.g. John Doe" />
                   </div>
                   <div className={styles.formGroup}>
                     <label className="input-label">Username</label>
-                    <input className="input" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} required placeholder="e.g. john" />
+                    <input className="input" value={newUsername ?? ""} onChange={(e) => setNewUsername(e.target.value)} required placeholder="e.g. john" />
                   </div>
                   <div className={styles.formGroup}>
                     <label className="input-label">Password</label>
-                    <input className="input" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required placeholder="••••••••" />
+                    <input className="input" type="password" value={newPassword ?? ""} onChange={(e) => setNewPassword(e.target.value)} required placeholder="••••••••" />
                   </div>
                   <div className={styles.formGroup}>
                     <label className="input-label">Departmental Role</label>
-                    <select className="select" value={Object.keys(roles).length ? newRole : ""} onChange={(e) => setNewRole(e.target.value)}>
+                    <select className="select" value={Object.keys(roles).length ? (newRole ?? "") : ""} onChange={(e) => setNewRole(e.target.value)}>
                       {Object.keys(roles).length === 0 && <option value="">Loading roles...</option>}
                       {Object.keys(roles).map(r => (
                         <option key={r} value={r}>{r.replace('_', ' ').toUpperCase()}</option>
@@ -406,7 +406,7 @@ export default function AdminPage() {
                           <td>
                             <select 
                               className={styles.inlineSelect} 
-                              value={u.role} 
+                              value={u.role ?? ""} 
                               onChange={(e) => handleUpdateRole(u.id, e.target.value)}
                               disabled={isProcessing || u.id === user.id}
                             >
@@ -449,7 +449,7 @@ export default function AdminPage() {
                     <p style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8 }}>
                       The collection determines which roles can retrieve this doc.
                     </p>
-                    <select className="select" value={targetCollection} onChange={(e) => setTargetCollection(e.target.value)}>
+                    <select className="select"                     value={targetCollection ?? ""} onChange={(e) => setTargetCollection(e.target.value)}>
                       {["general", "finance", "engineering", "marketing"].map(c => (
                         <option key={c} value={c}>{c.toUpperCase()}</option>
                       ))}

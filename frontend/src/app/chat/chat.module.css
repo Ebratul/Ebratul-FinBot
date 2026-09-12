@@ -2,7 +2,10 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: var(--bg-primary);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 35%),
+    linear-gradient(315deg, rgba(255, 255, 255, 0.05), transparent 42%),
+    #000000;
 }
 
 .bodyLayout {
@@ -13,8 +16,8 @@
 
 .sidebar {
   width: 260px;
-  background-color: var(--bg-card);
-  border-right: 1px solid var(--border-light);
+  background: #171717;
+  border-right: 1px solid #2f2f2f;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -22,7 +25,7 @@
 
 .sidebarHeader {
   padding: 16px;
-  border-bottom: 1px solid var(--border-light);
+  border-bottom: 1px solid #2f2f2f;
 }
 
 .sessionList {
@@ -36,7 +39,7 @@
   padding: 10px 12px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  color: var(--text-primary);
+  color: #d6d6d6;
   font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
@@ -48,11 +51,11 @@
 }
 
 .sessionItem:hover {
-  background: var(--bg-hover);
+  background: #2a2a2a;
 }
 
 .sessionItem.active {
-  background: var(--bg-secondary);
+  background: #303030;
   font-weight: 500;
 }
 
@@ -60,6 +63,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 24px;
+  background: transparent;
 }
 
 .chatContainer {
@@ -85,12 +89,12 @@
   font-family: var(--font-display);
   font-size: 32px;
   font-weight: 800;
-  color: var(--text-primary);
+  color: #f5f5f5;
   margin-bottom: 8px;
 }
 
 .welcome p {
-  color: var(--text-secondary);
+  color: #bdbdbd;
   font-size: 16px;
 }
 
@@ -146,20 +150,20 @@
   font-size: 15px;
   line-height: 1.6;
   position: relative;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   animation: slideUp 0.3s ease;
 }
 
 .userMessage {
-  background: var(--accent-gold);
-  color: var(--text-on-accent);
+  background: #2f2f2f;
+  color: #f5f5f5;
   border-top-right-radius: var(--radius-sm);
 }
 
 .botMessage {
-  background: var(--bg-card);
-  color: var(--text-primary);
-  border: 1px solid var(--border-light);
+  background: transparent;
+  color: #e5e5e5;
+  border: 1px solid transparent;
   border-top-left-radius: var(--radius-sm);
 }
 
@@ -205,8 +209,8 @@
 }
 
 .footer {
-  background: var(--bg-card);
-  border-top: 1px solid var(--border-light);
+  background: #000000;
+  border-top: 1px solid #2f2f2f;
   padding: 24px;
 }
 
@@ -221,8 +225,9 @@
 .chatInput {
   flex: 1;
   padding: 14px 20px;
-  background: var(--bg-input);
-  border: 1px solid var(--border-light);
+  background: #2f2f2f;
+  color: #f5f5f5;
+  border: 1px solid #454545;
   border-radius: var(--radius-full);
   font-size: 15px;
   outline: none;
@@ -230,7 +235,7 @@
 }
 
 .chatInput:focus {
-  border-color: var(--accent-gold);
+  border-color: #777777;
 }
 
 .sendBtn {

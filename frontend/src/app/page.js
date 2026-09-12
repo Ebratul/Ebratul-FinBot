@@ -59,9 +59,9 @@ export default function LoginPage() {
         {/* Header */}
         <div className={styles.header}>
           <div className={styles.logoLarge}>🤖</div>
-          <h1 className={styles.title}>FinBot</h1>
+          <h1 className={styles.title}>Ebratul FinBot</h1>
           <p className={styles.subtitle}>
-            Internal AI Assistant for <strong>FinSolve Technologies</strong>
+            Internal AI Assistant for <strong>Ebratul Technologies</strong>
           </p>
           <p className={styles.desc}>
             Ask questions about company policies, financial reports, engineering docs, and marketing assets — with role-based access control.
